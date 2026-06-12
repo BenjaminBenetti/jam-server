@@ -1,5 +1,11 @@
+import type { BunRequest } from "bun";
 import { getHealth } from "./health";
-import { listSessions } from "./sessions";
+import { mcpRoute } from "./mcp";
+import {
+  createSessionRoute,
+  listSessionJamsRoute,
+  listSessionsRoute,
+} from "./sessions";
 
 /**
  * API route table consumed by Bun.serve. Each entry maps a path to its
@@ -7,5 +13,13 @@ import { listSessions } from "./sessions";
  */
 export const apiRoutes = {
   "/api/health": { GET: () => getHealth() },
-  "/api/sessions": { GET: () => listSessions() },
+  "/api/sessions": {
+    GET: () => listSessionsRoute(),
+    POST: (req: Request) => createSessionRoute(req),
+  },
+  "/api/sessions/:id/jams": {
+    GET: (req: BunRequest<"/api/sessions/:id/jams">) =>
+      listSessionJamsRoute(req),
+  },
+  "/mcp/:sessionId": (req: BunRequest<"/mcp/:sessionId">) => mcpRoute(req),
 };

@@ -44,11 +44,17 @@ declare module "@strudel/transpiler" {
   export const transpiler: unknown;
 }
 
+declare module "@strudel/soundfonts" {
+  /** Register the General MIDI soundfont sounds (gm_*). */
+  export function registerSoundfonts(): void;
+}
+
 declare module "@strudel/webaudio" {
   export const webaudioOutput: unknown;
   export function getAudioContext(): AudioContext;
   export function initAudioOnFirstClick(): void;
   export function registerSynthSounds(): Promise<unknown>;
+  export function registerZZFXSounds(): void;
   /** Load a sample map, e.g. samples("github:tidalcycles/dirt-samples"). */
   export function samples(
     source: string | Record<string, unknown>,

@@ -21,7 +21,7 @@ export function DashboardPage() {
   }, []);
 
   return (
-    <section>
+    <section className="mx-auto max-w-5xl px-6 pb-16 pt-28">
       <h1>Dashboard</h1>
       <p className="mt-2 text-muted">
         Welcome to Jam Server — live-code music together with{" "}

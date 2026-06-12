@@ -20,6 +20,21 @@ bun run start       # production mode
 bun run typecheck   # TypeScript type checking
 ```
 
+## Jamming with an AI partner (MCP)
+
+Opening the Jam Session page creates a fresh in-memory session with a random
+MCP url (`/mcp/<session-id>`). Clicking the url copies a ready-to-use
+`.mcp.json` to the clipboard; point a coding agent (Claude Code, Cursor, …)
+at it and the agent can jam along via four tools:
+
+- `list_jams` / `read_jam` — browse the session's jams
+- `add_jam` / `update_jam` — write Strudel scripts into the session
+
+Jams appear live in the page's jam list, where the human selects and plays
+them. There is no auth: the unguessable session id is the secret
+(capability-url style), sessions live only in server memory, and listings
+never expose full ids.
+
 ## Project structure
 
 ```
@@ -27,6 +42,8 @@ src/
 ├── server/            # Backend (Bun.serve)
 │   ├── index.ts       # Entrypoint: serves the API + bundled frontend
 │   ├── config.ts      # Environment-driven configuration
+│   ├── mcp/           # Minimal MCP server (protocol plumbing + jam tools)
+│   ├── sessions/      # In-memory jam session store
 │   └── routes/        # API route table + one file per endpoint group
 ├── client/            # Frontend (React SPA)
 │   ├── index.html     # Bundler entry, imported by the server

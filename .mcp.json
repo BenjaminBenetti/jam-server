@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "jam-server": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp/870a6170c1af4091b398cbade31d0ae2"
+    }
+  }
+}

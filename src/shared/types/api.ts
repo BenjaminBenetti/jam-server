@@ -8,13 +8,32 @@ export interface HealthResponse {
   uptimeSeconds: number;
 }
 
-export interface JamSessionSummary {
+/** A jam: a named Strudel pattern script, editable by the AI jam partner. */
+export interface JamScript {
   id: string;
   name: string;
+  code: string;
   createdAt: string;
-  participantCount: number;
+  updatedAt: string;
+}
+
+export interface SessionSummary {
+  /** Truncated — full session ids are secrets that gate MCP access. */
+  id: string;
+  createdAt: string;
+  jamCount: number;
 }
 
 export interface ListSessionsResponse {
-  sessions: JamSessionSummary[];
+  sessions: SessionSummary[];
+}
+
+export interface CreateSessionResponse {
+  sessionId: string;
+  /** MCP endpoint for this session, for the AI jam partner to connect to. */
+  mcpUrl: string;
+}
+
+export interface ListJamsResponse {
+  jams: JamScript[];
 }

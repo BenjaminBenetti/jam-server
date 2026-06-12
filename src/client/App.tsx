@@ -7,7 +7,8 @@ export function App() {
   return (
     <BrowserRouter>
       <Header />
-      <main className="mx-auto max-w-5xl px-6 pb-16 pt-28">
+      {/* Pages own their layout: the fixed header is 60px tall (56px bar + 4px stripe). */}
+      <main>
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/jam" element={<JamSessionPage />} />

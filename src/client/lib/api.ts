@@ -1,15 +1,26 @@
-import type { HealthResponse, ListSessionsResponse } from "@shared/types/api";
+import type {
+  CreateSessionResponse,
+  HealthResponse,
+  ListJamsResponse,
+  ListSessionsResponse,
+} from "@shared/types/api";
 
-async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(path);
+async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(path, init);
   if (!response.ok) {
-    throw new Error(`GET ${path} failed with status ${response.status}`);
+    throw new Error(
+      `${init?.method ?? "GET"} ${path} failed with status ${response.status}`,
+    );
   }
   return response.json() as Promise<T>;
 }
 
 /** Typed client for the Jam Server backend API. */
 export const api = {
-  getHealth: () => getJson<HealthResponse>("/api/health"),
-  listSessions: () => getJson<ListSessionsResponse>("/api/sessions"),
+  getHealth: () => requestJson<HealthResponse>("/api/health"),
+  listSessions: () => requestJson<ListSessionsResponse>("/api/sessions"),
+  createSession: () =>
+    requestJson<CreateSessionResponse>("/api/sessions", { method: "POST" }),
+  listJams: (sessionId: string) =>
+    requestJson<ListJamsResponse>(`/api/sessions/${sessionId}/jams`),
 };

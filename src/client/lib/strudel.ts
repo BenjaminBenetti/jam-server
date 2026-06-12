@@ -1,10 +1,12 @@
 import { StrudelMirror } from "@strudel/codemirror";
 import { controls, evalScope } from "@strudel/core";
+import { registerSoundfonts } from "@strudel/soundfonts";
 import { transpiler } from "@strudel/transpiler";
 import {
   getAudioContext,
   initAudioOnFirstClick,
   registerSynthSounds,
+  registerZZFXSounds,
   samples,
   webaudioOutput,
 } from "@strudel/webaudio";
@@ -29,14 +31,38 @@ export interface StrudelEditor {
   /** Evaluate the current editor code and start playback. */
   evaluate(): Promise<void>;
   stop(): void;
+  /** Replace the editor contents. */
+  setCode(code: string): void;
   destroy(): void;
 }
 
 /**
- * Load the strudel function scope, synth sounds and the drum sample library.
+ * Load the strudel function scope and the full strudel.cc sound arsenal:
+ * synths, ZZFX, GM soundfonts (gm_*) and the standard sample libraries.
  * Shared across editor instances; only ever runs once.
  */
 let prebaked: Promise<void> | null = null;
+
+/** Same sample maps strudel.cc loads by default. */
+const SAMPLE_LIBRARY_BASE =
+  "https://raw.githubusercontent.com/felixroos/dough-samples/main";
+const SAMPLE_MAPS = [
+  "tidal-drum-machines.json",
+  "piano.json",
+  "Dirt-Samples.json",
+  "EmuSP12.json",
+  "vcsl.json",
+  "mridangam.json",
+];
+
+/** A failed sound bank shouldn't take the whole session down. */
+function warnOnError(load: () => unknown, what: string): Promise<unknown> {
+  return Promise.resolve()
+    .then(load)
+    .catch((error: unknown) => {
+      console.warn(`[strudel] failed to load ${what}:`, error);
+    });
+}
 
 function prebake(): Promise<void> {
   prebaked ??= (async () => {
@@ -47,11 +73,16 @@ function prebake(): Promise<void> {
       import("@strudel/mini"),
       import("@strudel/tonal"),
       import("@strudel/webaudio"),
+      import("@strudel/soundfonts"),
       controls,
     );
     await Promise.all([
-      registerSynthSounds(),
-      samples("github:tidalcycles/dirt-samples"),
+      warnOnError(() => registerSynthSounds(), "synth sounds"),
+      warnOnError(() => registerZZFXSounds(), "zzfx sounds"),
+      warnOnError(() => registerSoundfonts(), "soundfonts"),
+      ...SAMPLE_MAPS.map((map) =>
+        warnOnError(() => samples(`${SAMPLE_LIBRARY_BASE}/${map}`), map),
+      ),
     ]);
   })();
   return prebaked;
@@ -83,6 +114,7 @@ export function createStrudelEditor(
     stop: () => {
       void mirror.stop();
     },
+    setCode: (code) => mirror.setCode(code),
     destroy: () => {
       void mirror.stop();
       mirror.clear();

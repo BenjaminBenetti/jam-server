@@ -161,8 +161,10 @@
   }
 }
 
-/* Strudel's CodeMirror editor: fill the CRT well it is mounted in. */
+/* Strudel's CodeMirror editor: fill the CRT well it is mounted in
+   (scrolling internally when the well has a bounded height). */
 .cm-editor {
+  height: 100%;
   min-height: 280px;
   padding: 0.5rem;
 }
