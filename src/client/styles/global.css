@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/*
+ * Jam Server theme — "pastel Commodore 64".
+ *
+ * Two layers of tokens:
+ *  1. Raw palette (`c64-*`): the actual colors. Add new shades here.
+ *  2. Semantic tokens (background, primary, danger, …): what components
+ *     should use. Re-theming the app = remapping these aliases.
+ *
+ * Tailwind v4 turns each token into utilities automatically,
+ * e.g. --color-primary → bg-primary / text-primary / border-primary.
+ */
+@theme {
+  /* ---- Raw palette: pastel C64, warm red base ---- */
+  --color-c64-night: #241014; /* page background: deep wine */
+  --color-c64-screen: #190a0d; /* darker "CRT screen" wells */
+  --color-c64-wine: #3b1a21; /* raised surfaces */
+  --color-c64-brick: #6e3540; /* borders, chunky shadows */
+  --color-c64-dusk: #cfa3a8; /* muted text: warm rose-grey */
+  --color-c64-paper: #fcf0ec; /* main text: warm white */
+  --color-c64-salmon: #f59a8e;
+  --color-c64-mint: #9de8c4;
+  --color-c64-rose: #f5aec6;
+  --color-c64-butter: #f6e6a4;
+  --color-c64-sky: #a6dcf2;
+  --color-c64-lavender: #b6a7f5;
+  --color-c64-cherry: #ee6a76;
+
+  /* ---- Semantic tokens: use these in components ---- */
+  --color-background: var(--color-c64-night);
+  --color-screen: var(--color-c64-screen);
+  --color-surface: var(--color-c64-wine);
+  --color-border: var(--color-c64-brick);
+  --color-foreground: var(--color-c64-paper);
+  --color-muted: var(--color-c64-dusk);
+  --color-primary: var(--color-c64-salmon);
+  --color-primary-foreground: var(--color-c64-night);
+  --color-secondary: var(--color-c64-mint);
+  --color-accent: var(--color-c64-rose);
+  --color-warning: var(--color-c64-butter);
+  --color-info: var(--color-c64-sky);
+  --color-danger: var(--color-c64-cherry);
+
+  /* ---- Typography ---- */
+  --font-display: "Press Start 2P", monospace;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  /* ---- Chunky retro shadows ---- */
+  --shadow-chunky: 4px 4px 0 0 var(--color-border);
+  --shadow-chunky-sm: 2px 2px 0 0 var(--color-border);
+}
+
+/*
+ * Selectable themes — one per pastel primary. Each block remaps the semantic
+ * tokens; the picker sets data-theme on <html> (persisted in localStorage).
+ * The default (no data-theme / "salmon") is the @theme block above.
+ * To add a theme: add a block here and register it in src/client/lib/theme.ts.
+ */
+[data-theme="mint"] {
+  --color-background: #101d15;
+  --color-screen: #0a140e;
+  --color-surface: #1a3324;
+  --color-border: #38664c;
+  --color-muted: #a5cfb4;
+  --color-foreground: #ecfcf2;
+  --color-primary: var(--color-c64-mint);
+  --color-primary-foreground: #101d15;
+  --color-accent: var(--color-c64-sky);
+}
+
+[data-theme="sky"] {
+  --color-background: #0e1620;
+  --color-screen: #090f16;
+  --color-surface: #182c3e;
+  --color-border: #34587a;
+  --color-muted: #a3becf;
+  --color-foreground: #edf7fc;
+  --color-primary: var(--color-c64-sky);
+  --color-primary-foreground: #0e1620;
+  --color-accent: var(--color-c64-rose);
+}
+
+[data-theme="butter"] {
+  --color-background: #1f1a0d;
+  --color-screen: #151108;
+  --color-surface: #352c13;
+  --color-border: #6b5c2e;
+  --color-muted: #cfc5a3;
+  --color-foreground: #fcf8ec;
+  --color-primary: var(--color-c64-butter);
+  --color-primary-foreground: #1f1a0d;
+  --color-accent: var(--color-c64-salmon);
+}
+
+[data-theme="rose"] {
+  --color-background: #21101a;
+  --color-screen: #170a12;
+  --color-surface: #371a2c;
+  --color-border: #6b3556;
+  --color-muted: #cfa3bf;
+  --color-foreground: #fceef5;
+  --color-primary: var(--color-c64-rose);
+  --color-primary-foreground: #21101a;
+  --color-accent: var(--color-c64-sky);
+}
+
+[data-theme="lavender"] {
+  --color-background: #16112b;
+  --color-screen: #0f0b22;
+  --color-surface: #251d43;
+  --color-border: #473a70;
+  --color-muted: #a79fce;
+  --color-foreground: #f1edff;
+  --color-primary: var(--color-c64-lavender);
+  --color-primary-foreground: #16112b;
+  --color-accent: var(--color-c64-rose);
+}
+
+@layer base {
+  body {
+    @apply bg-background font-mono text-foreground antialiased;
+  }
+
+  h1 {
+    @apply font-display text-xl leading-relaxed text-primary sm:text-2xl;
+  }
+
+  a {
+    @apply text-info;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-block cursor-pointer border-2 border-border bg-primary px-4 py-2 text-sm font-bold text-primary-foreground no-underline shadow-chunky-sm transition-transform;
+  }
+
+  .btn:hover:not(:disabled) {
+    @apply -translate-x-0.5 -translate-y-0.5;
+  }
+
+  .btn:active:not(:disabled) {
+    @apply translate-x-0 translate-y-0;
+  }
+
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  .btn-secondary {
+    @apply bg-surface text-foreground;
+  }
+
+  .card {
+    @apply border-2 border-border bg-surface p-5 shadow-chunky;
+  }
+
+  .error-banner {
+    @apply border-2 border-danger bg-danger/10 px-4 py-3 text-danger;
+  }
+}
+
+/* Strudel's CodeMirror editor: fill the CRT well it is mounted in. */
+.cm-editor {
+  min-height: 280px;
+  padding: 0.5rem;
+}
+

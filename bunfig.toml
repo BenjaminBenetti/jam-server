@@ -1,0 +1,3 @@
+# Bundle Tailwind CSS when Bun.serve serves the HTML-imported frontend.
+[serve.static]
+plugins = ["bun-plugin-tailwind"]
