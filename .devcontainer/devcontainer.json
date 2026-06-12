@@ -1,0 +1,7 @@
+{
+  "name": "jam-server",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/bun:1": {}
+  }
+}
